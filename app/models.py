@@ -8,19 +8,17 @@ from datetime import datetime
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-class Movie:
+class Quotes:
     '''
     Movie class to define Movie Objects
     '''
 
-    def __init__(self,id,title,overview,poster,vote_average,vote_count):
+    def __init__(self,id,author,quote,permalink):
         self.id =id
-        self.title = title
-        self.overview = overview
-        self.poster = "https://image.tmdb.org/t/p/w500/" + poster
-        self.vote_average = vote_average
-        self.vote_count = vote_count
-
+        self.author = author
+        self.quote = quote
+        self.permalink = "http://quotes.stormconsultancy.co.uk/quotes/31"
+   
 
 
 class Review(db.Model):
@@ -94,13 +92,3 @@ class User(UserMixin,db.Model):
         return f'User {self.username}'
 
 
-class Role(db.Model):
-    __tablename__ = 'roles'
-
-    id = db.Column(db.Integer,primary_key = True)
-    name = db.Column(db.String(255))
-    users = db.relationship('User',backref = 'role',lazy="dynamic")
-
-
-    def __repr__(self):
-        return f'User {self.name}'
