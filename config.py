@@ -5,7 +5,7 @@ class Config:
     QUOTES_API = 'http://quotes.stormconsultancy.co.uk/random.json'
     SECRET_KEY = 'new'
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://wecode:ineza@localhost/Blog_test'
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://wecode:ineza@localhost/blog_test'
 
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -32,10 +32,10 @@ class Config:
 class ProdConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
 class TestConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://wecode:ineza@localhost/Blog_test'
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://wecode:ineza@localhost/blog_test'
 
 class DevConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://wecode:ineza@localhost/Blog'
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://wecode:ineza@localhost/blog'
     DEBUG = True
 
 config_options = {

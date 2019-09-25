@@ -28,5 +28,5 @@ def get_Quotes():
     quote = new_quote.get("quote")
     permalink = new_quote.get("permalink")
     quote_item = Quotes(id,author,quote,permalink)
-  return quote_item   
+    return quote_item   
   
