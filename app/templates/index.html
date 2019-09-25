@@ -15,44 +15,13 @@
   {% if current_user.is_authenticated%}
     <h1>Hello {{current_user.username}}</h1>
   {% else %}
-    <h1>Hello stranger</h1>
+    <h1 class="text-center">Hello stranger <br>Welcome to Blog</h1>
   {%endif%}
-    <form>
-        <input type="text" name="movie_query" placeholder="Search for a Movie" class="form-control">
-        <input type="submit"  value="Submit" class="btn btn-default">
-    </form>
-
+    
 </div>
 
 <div class="container">
 
-    <!-- Popular movie -->
-    <div class="row">
-        <h3> Popular Movies</h3>
-        <ul>
-            {{ macro.displayMovieList(popular)}}
-        </ul>
-    </div>
-    <!-- Upcoming movie  -->
-    <div class="row">
-
-        <h3> Upcoming Movies </h3>
-        <ul>
-            {{ macro.displayMovieList(upcoming)}}
-        </ul>
-    </div>
-
-    <!-- Now showing movie -->
-    <div class="row">
-
-        <h3>Now Showing</h3>
-        <ul>
-            {{ macro.displayMovieList(now_showing)}}
-        </ul>
-    </div>
-
-</div>
-
-
+  
 
 {% endblock%}
