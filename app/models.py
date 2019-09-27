@@ -10,7 +10,7 @@ def load_user(user_id):
 
 class Quotes:
     '''
-    Movie class to define Movie Objects
+    Quotes class to define Quote Objects
     '''
 
     def __init__(self,id,author,quote,permalink):
@@ -25,10 +25,10 @@ class Review(db.Model):
 
     __tablename__ = 'reviews'
     id = db.Column(db.Integer,primary_key = True)
-    movie_id = db.Column(db.Integer)
-    movie_title = db.Column(db.String)
+    post_id = db.Column(db.Integer)
+    post_title = db.Column(db.String)
     image_path = db.Column(db.String)
-    movie_review = db.Column(db.String)
+    post_review = db.Column(db.String)
     posted = db.Column(db.Time,default=datetime.utcnow())
     user_id = db.Column(db.Integer,db.ForeignKey("users.id"))
 
