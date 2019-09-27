@@ -1,10 +1,11 @@
 from flask import render_template,request,redirect,url_for,abort
 from . import main
-from ..request import get_Quotes
+from ..request import getQuotes
 from .forms import ReviewForm,UpdateProfile
 from ..models import Review,User,PhotoProfile
 from flask_login import login_required,current_user
 from .. import db,photos
+import requests
 
 import markdown2
 
@@ -13,14 +14,9 @@ import markdown2
 @main.route('/')
 def index():
 
-    '''
-    View root page function that returns the index page and its data
-    '''
+     quotes = getQuotes()
 
-    title = 'Home'
-
-    return render_template('index.html')
-
+     return render_template('index.html',quotes=quotes)
 
 @main.route('/posts/new/', methods = ['GET','POST'])
 @login_required

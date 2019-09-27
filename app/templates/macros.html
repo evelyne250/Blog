@@ -1,19 +1,55 @@
-<!-- Displaying movie list macro  -->
-{% macro displayMovieList(movie_list) %}
+{% macro display(category_list) %}
+<div class="row">
+	{% if category_list %}
+		{% for category in category_list %}
+		<div class="col-md-6">
+			<div class="thumbnail text-center">
+			<h5 class="card-header">{{category.title}}</h5>
+			<h5 class="card-header">{{category.category}}</h5>
+			<div class="card-body">
+				<blockquote class="blockquote mb-0">
+					<h2>{{category.description}}</h2>
+	              <footer> Posted by {{category.user.username}}</footer>
+				</blockquote>
+				
+				<a href="{{url_for('main.new_comment',pitch_id = category.id)}}" class="btn btn-info">Comment <span>{{category.comments.count()}}</span></a>
+				<a href="{{url_for('main.upvote',pitch_id = category.id)}}" class= "btn btn-primary btn-sm"><i></i>Like <span>{{category.upvotes.count()}}</span></a>
+				<a href="{{url_for('main.downvote',pitch_id = category.id)}}" class= "btn btn-danger btn-sm"><i class="far fa-thumbs-up"></i>Dislike <span>{{category.downvotes.count()}}</span></a>
 
-    {% for movie in movie_list %}
-        <div class="col-xs-12 col-sm-4 col-md-2 col-lg-2 movie-card">
-            <img src="{{ movie.poster }}" alt="{{ movie.title }} poster" class="img-responsive">
-            <li class="text-center">
-                <a href="/movie/{{movie.id}}">
-                    {{ movie.title|truncate(10)}}</a>
-            </li>
-        </div>
 
-    {% endfor %}
+			</div>
+		</div>
 
+		</div>
+		{% endfor %}
+	{% else %}
+	{% endif %}
+</div>
 {% endmacro %}
 
+
+
+{% macro displayComment(comments) %}
+<ul>
+
+			{% if comments %}
+			{% for comment in comments %}
+				<div class="row text-center">
+						<p style="color: rgb(43, 226, 226); font-size: 24px;">{{ comment.description }}</p>
+						
+				</div>
+			{% endfor %}
+			{% else %}
+
+			<h3>No Comments Yet! !</h3>
+			{%endif%}
+
+	</ul>
+	
+			
+
+
+{% endmacro %}
 
 <!-- Displaying reviews macro  -->
 {% macro displayReviews(review_list) %}
@@ -30,6 +66,7 @@
         <h2> <a href="{{url_for('main.single_review',id=review.id)}}">{{review.movie_title}}</a> </h2>
       </div>
     </div>
+
 
     {% endfor %}
 {% endmacro %}

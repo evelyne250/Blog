@@ -101,6 +101,7 @@ class Post(db.Model):
     title = db.Column(db.String())
     author = db.Column(db.String())
     category = db.Column(db.String(255), nullable=False)
+    posted = db.Column(db.Time,default=datetime.utcnow())
     comments = db.relationship('Comment',backref='blog',lazy='dynamic')
     upvotes = db.relationship('Upvote', backref = 'blog', lazy = 'dynamic')
     downvotes = db.relationship('Downvote', backref = 'blog', lazy = 'dynamic')

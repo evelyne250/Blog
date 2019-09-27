@@ -1,6 +1,8 @@
 
 import urllib.request,json
 from .models import Quotes
+import requests
+from config import Config
 
 
 
@@ -10,23 +12,18 @@ base_url = None
 def configure_request(app):
     global api_key,base_url
 
-    base_url = app.config['QUOTES_API']
+    base_url = Config.QUOTES_API
 
 
 
 
 
-
-def get_Quotes():
-    '''
-    Function that gets the json responce to our url request
-    '''
-    any_quote = requests.get(Quotes_api)
-    new_quote = random_quote.json()
-    id = new_quote.get("id")
-    author = new_quote.get("author")
-    quote = new_quote.get("quote")
-    permalink = new_quote.get("permalink")
-    quote_item = Quotes(id,author,quote,permalink)
-    return quote_item   
-  
+def getQuotes():
+   random_quote = requests.get(base_url)
+   new_quote = random_quote.json()
+   id = new_quote.get("id")
+   author = new_quote.get("author")
+   permalink = new_quote.get("permalink")
+   quote = new_quote.get("quote")
+   quote_object = Quotes(id,author,quote,permalink)
+   return quote_object
