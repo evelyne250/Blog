@@ -20,6 +20,26 @@ def index():
     title = 'Home'
 
     return render_template('index.html')
+
+
+@main.route('/posts/new/', methods = ['GET','POST'])
+@login_required
+def new_post():
+    form = PostForm()
+    
+    if form.validate_on_submit():
+        description = form.description.data
+        title = form.title.data
+        user_id = current_user
+        category = form.category.data
+        print(current_user._get_current_object().id)
+        new_post = Post(user_id =current_user._get_current_object().id, title = title,description=description,category=category)
+        db.session.add(new_post)
+        db.session.commit()
+        
+        
+        return redirect(url_for('main.index'))
+    return render_template('posts.html',form=form)
 # @main.route('/movie/<int:id>')
 # def movie(id):
 

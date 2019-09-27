@@ -99,6 +99,7 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
     description = db.Column(db.String(), index = True)
     title = db.Column(db.String())
+    author = db.Column(db.String())
     category = db.Column(db.String(255), nullable=False)
     comments = db.relationship('Comment',backref='blog',lazy='dynamic')
     upvotes = db.relationship('Upvote', backref = 'blog', lazy = 'dynamic')
