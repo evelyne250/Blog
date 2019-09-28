@@ -4,10 +4,21 @@ from wtforms.validators import Required,Email
 from ..models import User
 
 class PostForm(FlaskForm):
-	title = StringField('Title', validators=[Required()])
-	description = TextAreaField("Pitch Now :",validators=[Required()])
+	author = StringField('Author', validators=[Required()])
+	description = TextAreaField("Post a Blog Now :",validators=[Required()])
 	category = StringField('Category', validators=[Required()])
 	submit = SubmitField('Submit')
+
+class CommentForm(FlaskForm):
+	description = TextAreaField('Add comment',validators=[Required()])
+	submit = SubmitField()
+
+class UpvoteForm(FlaskForm):
+	submit = SubmitField()
+
+
+class Downvote(FlaskForm):
+	submit = SubmitField()
 
 class ReviewForm(FlaskForm):
 

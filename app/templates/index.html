@@ -1,6 +1,5 @@
 {% extends 'base.html'%}
-{% import 'macros.html' as macro%}
-
+{% import 'macros.html' as macro %}
 <!-- Styles block -->
 
 {% block styles%}
@@ -29,12 +28,30 @@
               <small>{{ quotes.author }}</small>
             </div>
 
+
+</div>
+<button class="btn btn-outline-primary">
+  <a style="text-align: center; color: rgb(44, 17, 17);" class="navbar-brand" href="/posts/new/"> Post a Blog </a>
+</button>
+
+</div>
+  </div>
+  {% for posts in post%}
+  <div class="row">
+  <div class="col-md-12">
+    <div class="thumbnail text-center" style="font-family: Great Vibes;font-size: 50px;">
+
+    <h5 class="card-header">{{posts.category}}</h5>
+    <div class="card-body">
+    
+        <h2>{{posts.description}}</h2>
+        <small><a style="font-family: Great Vibes;font-size: 20px;">{{posts.author}}</a></small>
+        
 </div>
 </div>
   </div>
-
-
-</div>
+  </div>
+  {% endfor %}
 {% endblock%}
 
    

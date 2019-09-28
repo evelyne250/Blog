@@ -10,7 +10,7 @@ from config import Config
 base_url = None
 
 def configure_request(app):
-    global api_key,base_url
+    global base_url
 
     base_url = Config.QUOTES_API
 

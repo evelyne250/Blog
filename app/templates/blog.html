@@ -20,12 +20,12 @@
         </div>
 
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 movie-details">
-            <h3>{{ movie.title }}</h3>
+            <h3>{{ post.title }}</h3>
 
-            <p class="overview"> {{ movie.overview }}</p>
+            <p class="overview"> {{ post.overview }}</p>
 
-            <p class="ratings"> <b> {{ movie.vote_average }}</b> - <i>{{ movie.vote_count}} votes </i> </p>
-            <a class="ratings" href="/movie/review/new/{{movie.id}}"> Write a new review</a>
+            <p class="ratings"> <b> {{ post.vote_average }}</b> - <i>{{ post.vote_count}} votes </i> </p>
+            <a class="ratings" href="/post/review/new/{{post.id}}"> Write a new review</a>
 
 
         </div>
@@ -39,12 +39,12 @@
         <hr>
 
         {% if reviews %}
-            <h5>This movie has {{reviews | count}}  <a href="{{url_for('main.movie_reviews',id=movie.id)}}">reviews</a></h5>
+            <h5>This Blog has {{reviews | count}}  <a href="{{url_for('main.post_reviews',id=post.id)}}">Comment</a></h5>
 
         {% else%}
-            <h3 class="text-center">This movie has no reviews </h3>
+            <h3 class="text-center">This Blog has no reviews </h3>
 
-            <a class="btn btn-success btn-lg text-center" href="/movie/review/new/{{movie.id}}"> Write a new review</a>
+            <a class="btn btn-success btn-lg text-center" href="/post/review/new/{{post.id}}"> Write a new review</a>
         {% endif %}
 
     </div>

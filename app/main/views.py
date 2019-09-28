@@ -1,8 +1,8 @@
 from flask import render_template,request,redirect,url_for,abort
 from . import main
 from ..request import getQuotes
-from .forms import ReviewForm,UpdateProfile
-from ..models import Review,User,PhotoProfile
+from .forms import ReviewForm,UpdateProfile,PostForm,CommentForm,UpvoteForm,Downvote
+from ..models import Review,User,PhotoProfile,Post,Comment,Upvote,Downvote
 from flask_login import login_required,current_user
 from .. import db,photos
 import requests
@@ -13,10 +13,11 @@ import markdown2
 # Views
 @main.route('/')
 def index():
-
+     post = Post.query.all()
      quotes = getQuotes()
 
-     return render_template('index.html',quotes=quotes)
+
+     return render_template('index.html',quotes=quotes,post = post)
 
 @main.route('/posts/new/', methods = ['GET','POST'])
 @login_required
@@ -25,91 +26,134 @@ def new_post():
     
     if form.validate_on_submit():
         description = form.description.data
-        title = form.title.data
+        author = form.author.data
         user_id = current_user
         category = form.category.data
         print(current_user._get_current_object().id)
-        new_post = Post(user_id =current_user._get_current_object().id, title = title,description=description,category=category)
+        new_post = Post(user_id =current_user._get_current_object().id, author = author,description=description,category=category)
         db.session.add(new_post)
         db.session.commit()
         
         
         return redirect(url_for('main.index'))
     return render_template('posts.html',form=form)
-# @main.route('/movie/<int:id>')
-# def movie(id):
-
-#     '''
-#     View movie page function that returns the movie details page and its data
-#     '''
-#     movie = get_movie(id)
-#     title = f'{movie.title}'
-#     reviews = Review.get_reviews(movie.id)
-
-#     return render_template('movie.html',title = title,movie = movie,reviews = reviews)
 
 
 
-# @main.route('/search/<movie_name>')
-# def search(movie_name):
-#     '''
-#     View function to display the search results
-#     '''
-#     movie_name_list = movie_name.split(" ")
-#     movie_name_format = "+".join(movie_name_list)
-#     searched_movies = search_movie(movie_name_format)
-#     title = f'search results for {movie_name}'
-#     return render_template('search.html',movies = searched_movies)
+@main.route('/comment/new/<int:post_id>', methods = ['GET','POST'])
+@login_required
+def new_comment(post_id):
+    form = CommentForm()
+    post=Post.query.get(post_id)
+    if form.validate_on_submit():
+        description = form.description.data
+       
+        new_comment = Comment(description = description, user_id = current_user._get_current_object().id, post_id = post_id)
+        db.session.add(new_comment)
+        db.session.commit()
+
+
+        return redirect(url_for('.new_comment', post_id= post_id))
+
+    all_comments = Comment.query.filter_by(post_id = post_id).all()
+    return render_template('comments.html', form = form, comment = all_comments, post = post )
+
+
+@main.route('/post/upvote/<int:post_id>/upvote', methods = ['GET', 'POST'])
+@login_required
+def upvote(post_id):
+    post = Post.query.get(post_id)
+    user = current_user
+    post_upvotes = Upvote.query.filter_by(post_id= post_id)
+    
+    if Upvote.query.filter(Upvote.user_id==user.id,Upvote.post_id==post_id).first():
+        return  redirect(url_for('main.index'))
+
+
+    new_upvote = Upvote(post_id=post_id)
+    new_upvote.save_upvotes()
+    return redirect(url_for('main.index'))
+
+
+
+
+@main.route('/post/downvote/<int:post_id>/downvote', methods = ['GET', 'POST'])
+@login_required
+def downvote(post_id):
+    post = Post.query.get(post_id)
+    user = current_user
+    post_downvotes = Downvote.query.filter_by(post_id= post_id)
+    
+    if Downvote.query.filter(Downvote.user_id==user.id,Downvote.post_id==post_id).first():
+        return  redirect(url_for('main.index'))
+
+
+    new_downvote = Downvote(post_id=post_id)
+    new_downvote.save_downvotes()
+    return redirect(url_for('main.index'))
+
+@main.route('/post/<int:id>')
+def post(id):
+
+    '''
+    View movie page function that returns the movie details page and its data
+    '''
+    post = get_posts(id)
+    # title = f'{movie.title}'
+    reviews = Review.get_reviews(post.id)
+
+    return render_template('blog.html',title = title,movie = movie,reviews = reviews)
 
 
 @main.route('/reviews/<int:id>')
-def movie_reviews(id):
-    movie = get_movie(id)
+def post_reviews(id):
+    post = get_posts(id)
 
     reviews = Review.get_reviews(id)
-    title = f'All reviews for {movie.title}'
-    return render_template('movie_reviews.html',title = title,reviews=reviews)
+    title = f'All reviews for {post.author}'
+    return render_template('post_reviews.html',author = author,reviews=reviews)
 
 
 @main.route('/review/<int:id>')
 def single_review(id):
     review=Review.query.get(id)
-    format_review = markdown2.markdown(review.movie_review,extras=["code-friendly", "fenced-code-blocks"])
+    format_review = markdown2.markdown(review.post_review,extras=["code-friendly", "fenced-code-blocks"])
     return render_template('review.html',review = review,format_review=format_review)
 
 
 
 
-@main.route('/movie/review/new/<int:id>', methods = ['GET','POST'])
+@main.route('/post/review/new/<int:id>', methods = ['GET','POST'])
 @login_required
 def new_review(id):
 
     form = ReviewForm()
 
-    movie = get_movie(id)
+    post = get_posts(id)
 
     if form.validate_on_submit():
-        title = form.title.data
+        author = form.author.data
         review = form.review.data
 
-        new_review = Review(movie_id=movie.id,movie_title=title,image_path=movie.poster,movie_review=review,user=current_user)
+        new_review = Review(post_id=post.id,post_author=author,post_review=review,user=current_user)
 
         new_review.save_review()
 
-        return redirect(url_for('.movie',id = movie.id ))
+        return redirect(url_for('.post',id = post.id ))
 
-    title = f'{movie.title} review'
-    return render_template('new_review.html',title = title, review_form=form, movie=movie)
+    author = f'{post.author} review'
+    return render_template('new_review.html',author = author, review_form=form, post=post)
 
 @main.route('/user/<uname>')
 
 def profile(uname):
     user = User.query.filter_by(username = uname).first()
-
+    get_posts = Post.query.filter_by(user_id = current_user.id).all()
+    print(get_posts)
     if user is None:
         abort(404)
 
-    return render_template("profile/profile.html", user = user)
+    return render_template("profile/profile.html", user = user, posts = get_posts)
 
 
 @main.route('/user/<uname>/update',methods = ['GET','POST'])
