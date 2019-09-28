@@ -62,7 +62,7 @@
       </blockquote>
         
           
-				<a href="{{url_for('main.new_comment',post_id = post.id)}}" class="btn btn-info">Comment <span>{{post.comments.count()}}</span></a>
+				<a href="{{url_for('main.comment',post_id = post.id)}}" class="btn btn-info">Comment <span>{{post.comments.count()}}</span></a>
 				<a href="{{url_for('main.upvote',post_id = post.id)}}" class= "btn btn-primary btn-sm"><i></i>Like <span>{{post.upvotes.count()}}</span></a>
 				<a href="{{url_for('main.downvote',post_id = post.id)}}" class= "btn btn-danger btn-sm"><i class="far fa-thumbs-up"></i>Dislike <span>{{post.downvotes.count()}}</span></a>
 

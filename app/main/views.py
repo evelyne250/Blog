@@ -40,25 +40,44 @@ def new_post():
 
 
 
-@main.route('/comment/new/<int:post_id>', methods = ['GET','POST'])
-@login_required
-def new_comment(post_id):
-    form = CommentForm()
-    post=Post.query.get(post_id)
-    if form.validate_on_submit():
-        description = form.description.data
+# @main.route('/comment/new/<int:post_id>', methods = ['GET','POST'])
+# @login_required
+# def new_comment(post_id):
+#     form = CommentForm()
+#     post=Post.query.get(post_id)
+#     if form.validate_on_submit():
+#         description = form.description.data
        
-        new_comment = Comment(description = description, user_id = current_user._get_current_object().id, post_id = post_id)
-        db.session.add(new_comment)
-        db.session.commit()
+#         new_comment = Comment(description = description, user_id = current_user._get_current_object().id, post_id = post_id)
+#         db.session.add(new_comment)
+#         db.session.commit()
 
 
-        return redirect(url_for('.new_comment', post_id= post_id))
+#         return redirect(url_for('main.index', post_id= post_id))
 
-    all_comments = Comment.query.filter_by(post_id = post_id).all()
-    return render_template('comments.html', form = form, comment = all_comments, post = post )
+#     all_comments = Comment.query.filter_by(post_id = post_id).all()
+#     return render_template('comments.html', form = form, comment = all_comments, post = post )
 
 
+@main.route('/post/<int:post_id>',methods= ['POST','GET'])
+
+def comment(post_id):
+    if request.method == 'POST':
+        form = request.form
+        name = form.get("name")
+        description = form.get("description")
+       
+        
+        if  name==None or description==None:
+            error = "Comment needs name and description"
+            return render_template('navbar.html', error=error)
+        else:
+            comment = Comment( name=name,description=description,post_id= post_id)
+            comment.save_comment()
+            comments= Comment.query.filter_by(post_id=post_id).all()
+            post = Post.query.get_or_404(post_id)
+    return render_template('comments.html') 
+    
 @main.route('/post/upvote/<int:post_id>/upvote', methods = ['GET', 'POST'])
 @login_required
 def upvote(post_id):

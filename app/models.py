@@ -85,7 +85,9 @@ class User(UserMixin,db.Model):
     def save_user(self):
         db.session.add(self)
         db.session.commit()
-
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
     def __repr__(self):
         return f'User {self.username}'
 
@@ -113,6 +115,10 @@ class Post(db.Model):
         posts = Post.query.order_by(post_id=id).desc().all()
         return posts
 
+    def delete_post(self):
+        db.session.delete(self)
+        db.session.commit()
+
     def __repr__(self):
         return f'Post {self.description}'
 
@@ -122,11 +128,17 @@ class Comment(db.Model):
     __tablename__='comments'
     
     id = db.Column(db.Integer,primary_key=True)
+    name = db.Column(db.String())
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable= False)
     description = db.Column(db.Text)
 
-    
+    def save_comment(self):
+        db.session.add(self)
+        db.session.commit()
+    def delete_comment(self):
+        db.session.delete(self)
+        db.session.commit() 
     def __repr__(self):
         return f"Comment : id: {self.id} comment: {self.description}"
 
