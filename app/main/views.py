@@ -2,7 +2,7 @@ from flask import render_template,request,redirect,url_for,abort
 from . import main
 from ..request import getQuotes
 from .forms import ReviewForm,UpdateProfile,PostForm,CommentForm
-from ..models import Review,User,PhotoProfile,Post,Comment
+from ..models import User,PhotoProfile,Post,Comment
 from flask_login import login_required,current_user
 from .. import db,photos
 import requests
@@ -23,18 +23,9 @@ def index():
 def subscribe():
     return render_template('subcribe.html',title='Subscribe')
 
-@main.route('/posts/update_post/<int:post_id>')
+@main.route('/post/update_post/<int:post_id>')
 @login_required
 def update_post(post_id):
-    
-    
-    return redirect(url_for('main.index'))
-
-@main.route('/delete_post/<int:post_id>',methods= ['POST','GET'])
-@login_required
-def delete_post(post_id):
-    post= Post.query.filter_by(id = post_id).first()
-    post.delete_post()
     
     
     return redirect(url_for('main.index'))
@@ -54,29 +45,23 @@ def new_post():
         db.session.add(new_post)
         db.session.commit()
         
-        
         return redirect(url_for('main.index'))
     return render_template('posts.html',form=form)
 
+@main.route('/delete_post/<int:post_id>',methods= ['POST','GET'])
+@login_required
+def delete_post(post_id):
+    post= Post.query.filter_by(id = post_id).first()
+    post.delete_post()
+    
+    
+    return redirect(url_for('main.index'))
 
-
-# @main.route('/comment/new/<int:post_id>', methods = ['GET','POST'])
-# @login_required
-# def new_comment(post_id):
-#     form = CommentForm()
-#     post=Post.query.get(post_id)
-#     if form.validate_on_submit():
-#         description = form.description.data
-       
-#         new_comment = Comment(description = description, user_id = current_user._get_current_object().id, post_id = post_id)
-#         db.session.add(new_comment)
-#         db.session.commit()
-
-
-#         return redirect(url_for('main.index', post_id= post_id))
-
-#     all_comments = Comment.query.filter_by(post_id = post_id).all()
-#     return render_template('comments.html', form = form, comment = all_comments, post = post )
+@main.route("/post/<int:post_id>")
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
+    comments = Comment.query.filter_by(post_id = post_id)
+    return render_template('posts.html', title=post.title, post=post,comments=comments)
 
 
 @main.route('/post/<int:post_id>',methods= ['POST','GET'])
@@ -86,71 +71,28 @@ def comment(post_id):
         form = request.form
         name = form.get("name")
         description = form.get("description")
-       
+        email= form.get("email")
         
-        if  name==None or description==None:
-            error = "Comment needs name and description"
-            return render_template('navbar.html', error=error)
+        if  name==None or description==None or email == None:
+            error = "Comment needs name ,description and email"
+            return render_template('new_post.html', error=error)
         else:
-            comment = Comment( name=name,description=description,post_id= post_id)
+            comment = Comment( name=name,description=description,email=email,post_id= post_id)
             comment.save_comment()
             comments= Comment.query.filter_by(post_id=post_id).all()
             post = Post.query.get_or_404(post_id)
-    return render_template('comments.html') 
-    
+            return render_template('posts.html',comments=comments,post=post) 
+    return render_template('posts.html',comments=comments,post=post) 
 
-
-@main.route('/post/<int:id>')
-def post(id):
-
-    '''
-    View movie page function that returns the movie details page and its data
-    '''
-    post = get_posts(id)
-    # title = f'{movie.title}'
-    reviews = Review.get_reviews(post.id)
-
-    return render_template('blog.html',title = title,movie = movie,reviews = reviews)
-
-
-@main.route('/reviews/<int:id>')
-def post_reviews(id):
-    post = get_posts(id)
-
-    reviews = Review.get_reviews(id)
-    title = f'All reviews for {post.author}'
-    return render_template('post_reviews.html',author = author,reviews=reviews)
-
-
-@main.route('/review/<int:id>')
-def single_review(id):
-    review=Review.query.get(id)
-    format_review = markdown2.markdown(review.post_review,extras=["code-friendly", "fenced-code-blocks"])
-    return render_template('review.html',review = review,format_review=format_review)
-
-
-
-
-@main.route('/post/review/new/<int:id>', methods = ['GET','POST'])
+@main.route('/delete_comment/<int:post_id>',methods= ['POST','GET'])
 @login_required
-def new_review(id):
-
-    form = ReviewForm()
-
-    post = get_posts(id)
-
-    if form.validate_on_submit():
-        author = form.author.data
-        review = form.review.data
-
-        new_review = Review(post_id=post.id,post_author=author,post_review=review,user=current_user)
-
-        new_review.save_review()
-
-        return redirect(url_for('.post',id = post.id ))
-
-    author = f'{post.author} review'
-    return render_template('new_review.html',author = author, review_form=form, post=post)
+def delete_comment(post_id):
+    comment= Comment.query.filter_by(post_id = post_id).first()
+    comment.delete_comment()
+    
+    
+    return redirect(url_for('main.posts',post_id=post_id))          
+    
 
 @main.route('/user/<uname>')
 
