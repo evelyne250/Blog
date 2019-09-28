@@ -63,9 +63,10 @@
         
           
 				<a href="{{url_for('main.comment',post_id = post.id)}}" class="btn btn-info">Comment <span>{{post.comments.count()}}</span></a>
-				<a href="{{url_for('main.upvote',post_id = post.id)}}" class= "btn btn-primary btn-sm"><i></i>Like <span>{{post.upvotes.count()}}</span></a>
-				<a href="{{url_for('main.downvote',post_id = post.id)}}" class= "btn btn-danger btn-sm"><i class="far fa-thumbs-up"></i>Dislike <span>{{post.downvotes.count()}}</span></a>
-
+				
+        <a class= "btn btn-primary btn-sm" href="{{ url_for('main.update_post', post_id=post.id) }}">Edit</a>
+        <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+    
 
         {% endfor %}
       

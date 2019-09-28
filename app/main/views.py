@@ -1,8 +1,8 @@
 from flask import render_template,request,redirect,url_for,abort
 from . import main
 from ..request import getQuotes
-from .forms import ReviewForm,UpdateProfile,PostForm,CommentForm,UpvoteForm,Downvote
-from ..models import Review,User,PhotoProfile,Post,Comment,Upvote,Downvote
+from .forms import ReviewForm,UpdateProfile,PostForm,CommentForm
+from ..models import Review,User,PhotoProfile,Post,Comment
 from flask_login import login_required,current_user
 from .. import db,photos
 import requests
@@ -18,6 +18,26 @@ def index():
 
 
      return render_template('index.html',quotes=quotes,post = post)
+
+@main.route('/subscribe')
+def subscribe():
+    return render_template('subcribe.html',title='Subscribe')
+
+@main.route('/posts/update_post/<int:post_id>')
+@login_required
+def update_post(post_id):
+    
+    
+    return redirect(url_for('main.index'))
+
+@main.route('/delete_post/<int:post_id>',methods= ['POST','GET'])
+@login_required
+def delete_post(post_id):
+    post= Post.query.filter_by(id = post_id).first()
+    post.delete_post()
+    
+    
+    return redirect(url_for('main.index'))
 
 @main.route('/posts/new/', methods = ['GET','POST'])
 @login_required
@@ -78,38 +98,7 @@ def comment(post_id):
             post = Post.query.get_or_404(post_id)
     return render_template('comments.html') 
     
-@main.route('/post/upvote/<int:post_id>/upvote', methods = ['GET', 'POST'])
-@login_required
-def upvote(post_id):
-    post = Post.query.get(post_id)
-    user = current_user
-    post_upvotes = Upvote.query.filter_by(post_id= post_id)
-    
-    if Upvote.query.filter(Upvote.user_id==user.id,Upvote.post_id==post_id).first():
-        return  redirect(url_for('main.index'))
 
-
-    new_upvote = Upvote(post_id=post_id)
-    new_upvote.save_upvotes()
-    return redirect(url_for('main.index'))
-
-
-
-
-@main.route('/post/downvote/<int:post_id>/downvote', methods = ['GET', 'POST'])
-@login_required
-def downvote(post_id):
-    post = Post.query.get(post_id)
-    user = current_user
-    post_downvotes = Downvote.query.filter_by(post_id= post_id)
-    
-    if Downvote.query.filter(Downvote.user_id==user.id,Downvote.post_id==post_id).first():
-        return  redirect(url_for('main.index'))
-
-
-    new_downvote = Downvote(post_id=post_id)
-    new_downvote.save_downvotes()
-    return redirect(url_for('main.index'))
 
 @main.route('/post/<int:id>')
 def post(id):
