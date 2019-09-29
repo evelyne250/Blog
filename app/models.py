@@ -56,48 +56,51 @@ class User(UserMixin,db.Model):
         return f'{self.username}'
 
 
-
-
-
 class Post(db.Model):
     __tablename__= 'posts'
     id = db.Column(db.Integer,primary_key= True)
-    title = db.Column(db.String(255),nullable=False)
+    # title = db.Column(db.String(255),nullable=False)
     description = db.Column(db.Text,nullable=False)
     author = db.Column(db.String(255),nullable=False)
     category = db.Column(db.String(255),nullable=False)
-    date_posted = db.Column(db.DateTime, default = datetime.utcnow)   
+    # date_posted = db.Column(db.DateTime, default = datetime.utcnow)   
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    comments = db.relationship('Comment', backref = 'post', lazy = 'dynamic')
+    # comments = db.relationship('Comment', backref = 'post', lazy = 'dynamic')
 
-    def save_post(self):
-        db.session.add(self)
-        db.session.commit()
+
+    @classmethod
+    def get_posts(cls, id):
+        posts = Post.query.order_by(post_id=id).desc().all()
+        return posts
     def delete_post(self):
         db.session.delete(self)
         db.session.commit()
-    
+
     def __repr__(self):
-        return "Post:%s"%str(self.title)
+        return f'Post {self.description}'
 
-class Comment(db.Model):
-    __tablename__ = 'comments'
 
-    id = db.Column(db.Integer, primary_key = True)
-    name =  db.Column(db.String(255),nullable=False)
-    email = db.Column(db.String(255), nullable =False)
-    description  = db.Column(db.String(1000) )          
-    date_posted = db.Column(db.DateTime, default = datetime.utcnow)    
-    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+# class Comment(db.Model):
+#     __tablename__ = 'comments'
 
-    def save_comment(self):
-        db.session.add(self)
-        db.session.commit()
-    def delete_comment(self):
-        db.session.delete(self)
-        db.session.commit()
+#     id = db.Column(db.Integer,primary_key=True)
+#     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable= False)
+#     description = db.Column(db.Text)
 
     
+#     def __repr__(self):
+#         return f"Comment : id: {self.id} comment: {self.description}"
+
+
+#     def save_comment(self):
+#         db.session.add(self)
+#         db.session.commit()
+#     def delete_comment(self):
+#         db.session.delete(self)
+#         db.session.commit()
+
+
 @login_manager.user_loader
 def user_loader(user_id):
     return User.query.get(user_id)

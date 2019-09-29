@@ -2,7 +2,8 @@ from flask import render_template,request,redirect,url_for,abort
 from . import main
 from ..request import getQuotes
 from .forms import ReviewForm,UpdateProfile,PostForm,CommentForm
-from ..models import User,PhotoProfile,Post,Comment
+from ..models import User,PhotoProfile,Post
+# ,Comment
 from flask_login import login_required,current_user
 from .. import db,photos
 import requests
@@ -61,7 +62,7 @@ def delete_post(post_id):
 def post(post_id):
     post = Post.query.get_or_404(post_id)
     comments = Comment.query.filter_by(post_id = post_id)
-    return render_template('posts.html', title=post.title, post=post,comments=comments)
+    return render_template('posts.html', author=post.author, post=post,comments=comments)
 
 
 @main.route('/post/<int:post_id>',methods= ['POST','GET'])
