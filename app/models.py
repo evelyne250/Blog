@@ -65,7 +65,7 @@ class Post(db.Model):
     category = db.Column(db.String(255),nullable=False)
     # date_posted = db.Column(db.DateTime, default = datetime.utcnow)   
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    # comments = db.relationship('Comment', backref = 'post', lazy = 'dynamic')
+    comments = db.relationship('Comment', backref = 'post', lazy = 'dynamic')
 
 
     @classmethod
@@ -80,25 +80,23 @@ class Post(db.Model):
         return f'Post {self.description}'
 
 
-# class Comment(db.Model):
-#     __tablename__ = 'comments'
+class Comment(db.Model):
+    __tablename__ = 'comments'
 
-#     id = db.Column(db.Integer,primary_key=True)
-#     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable= False)
-#     description = db.Column(db.Text)
+    id = db.Column(db.Integer, primary_key = True)
+    name =  db.Column(db.String(255),nullable=False)
+    email = db.Column(db.String(255), nullable =False)
+    content = db.Column(db.String(1000) )          
+    date_posted = db.Column(db.DateTime, default = datetime.utcnow)    
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
 
-    
-#     def __repr__(self):
-#         return f"Comment : id: {self.id} comment: {self.description}"
+    def save_comment(self):
+        db.session.add(self)
+        db.session.commit()
+    def delete_comment(self):
+        db.session.delete(self)
+        db.session.commit()
 
-
-#     def save_comment(self):
-#         db.session.add(self)
-#         db.session.commit()
-#     def delete_comment(self):
-#         db.session.delete(self)
-#         db.session.commit()
 
 
 @login_manager.user_loader

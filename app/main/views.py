@@ -2,8 +2,7 @@ from flask import render_template,request,redirect,url_for,abort
 from . import main
 from ..request import getQuotes
 from .forms import ReviewForm,UpdateProfile,PostForm,CommentForm,UpdateForm
-from ..models import User,PhotoProfile,Post
-# ,Comment
+from ..models import User,PhotoProfile,Post,Comment
 from flask_login import login_required,current_user
 from .. import db,photos
 import requests
@@ -80,9 +79,14 @@ def delete_post(post_id):
 @main.route("/post/<int:post_id>")
 def post(post_id):
     post = Post.query.get_or_404(post_id)
-    comments = Comment.query.filter_by(post_id = post_id)
+    
     return render_template('posts.html', author=post.author, post=post,comments=comments)
 
+@main.route("/comment/<int:post_id>")
+def comments(post_id):
+    form = CommentForm()
+    comments = Comment.query.filter_by(post_id = post_id)
+    return render_template('comments.html', author=post.author,comments=comments)
 
 @main.route('/post/<int:post_id>',methods= ['POST','GET'])
 
@@ -90,19 +94,20 @@ def comment(post_id):
     if request.method == 'POST':
         form = request.form
         name = form.get("name")
-        description = form.get("description")
+        content = form.get("content")
         email= form.get("email")
         
-        if  name==None or description==None or email == None:
-            error = "Comment needs name ,description and email"
-            return render_template('new_post.html', error=error)
+        if  name==None or content==None or email == None:
+            error = "fill out the form "
+            return render_template('comments.html', error=error)
         else:
-            comment = Comment( name=name,description=description,email=email,post_id= post_id)
+            comment = Comment( name=name,content=content,email=email,post_id= post_id)
             comment.save_comment()
             comments= Comment.query.filter_by(post_id=post_id).all()
             post = Post.query.get_or_404(post_id)
-            return render_template('comments.html',comments=comments,post=post) 
-    return render_template('comments.html',comments=comments,post=post) 
+            return render_template('profile.html',comments=commentprofilepost) 
+    return render_template('profile.html',comments=comments,post=post) 
+
 
 @main.route('/delete_comment/<int:post_id>',methods= ['POST','GET'])
 @login_required
@@ -111,7 +116,7 @@ def delete_comment(post_id):
     comment.delete_comment()
     
     
-    return redirect(url_for('main.posts',post_id=post_id))          
+    return redirect(url_for('main.profile',post_id=post_id))          
     
 
 @main.route('/user/<uname>')

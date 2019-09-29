@@ -1,60 +1,6 @@
-{% include 'navbar.html'%}
-
+{% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
-{% extends 'bootstrap/base.html' %}
-
 
 {% block content %}
-
-
-        
-<div class="row">
-        
-                {% for post in posts%}
-                <div class="row">
-                <div class="col-md-12">
-                  <div class="thumbnail text-center" style="font-family: Great Vibes;font-size: 50px;">
-              
-                  <h5 class="card-header">{{post.category}}</h5>
-                  <div class="card-body">
-                  
-                      <h2>{{post.description}}</h2>
-                      <small><a style="font-family: Great Vibes;font-size: 20px;">{{post.author}}</a></small>
-                      
-              </div>
-              </div>
-                </div>
-                </div>
-                {% endfor %}
-
-
-                        
-<hr><hr>
-        <div class="container">
-                        <div class="col-md-4 mt-5">
-                                        {%if comments%}
-                                        <h5><strong>Comments</strong></h5>
-                                        {%for comment in comments%}
-                                        
-                                        <h6>Posted by: {{comment.name|capitalize}}</h6>
-                                        <small>Date Posted: {{comment.date_posted.strftime('%Y-%m-%d')}}</small>
-                                        <p>{{comment.description}}</p>
-                                        {%if post.author == current_user.username%}
-                                            <form action="{{ url_for('main.delete_comment', post_id=post.id) }}" method="POST">
-                                                <input class="btn btn-danger btn-sm" type="submit" value="Delete">
-                                            </form>
-                                
-                                        {%endif%}
-                                        {%endfor%}
-                                        {%endif%}
-                                       
-                                    </div>
-                 
-        </div>
-        
-</div>
-
-
-
-	
+  {{wtf.quick_form(form)}}
 {% endblock %}
