@@ -9,6 +9,12 @@ class PostForm(FlaskForm):
 	category = StringField('Category', validators=[Required()])
 	submit = SubmitField('Submit')
 
+class UpdateForm(FlaskForm):
+	author = StringField('Author', validators=[Required()])
+	description = TextAreaField("Edit your Blog Now :",validators=[Required()])
+	category = StringField('Category', validators=[Required()])
+	submit = SubmitField('Submit')
+
 class CommentForm(FlaskForm):
 	description = TextAreaField('Add comment',validators=[Required()])
 	submit = SubmitField()

@@ -1,7 +1,7 @@
 from flask import render_template,request,redirect,url_for,abort
 from . import main
 from ..request import getQuotes
-from .forms import ReviewForm,UpdateProfile,PostForm,CommentForm
+from .forms import ReviewForm,UpdateProfile,PostForm,CommentForm,UpdateForm
 from ..models import User,PhotoProfile,Post
 # ,Comment
 from flask_login import login_required,current_user
@@ -24,12 +24,29 @@ def index():
 def subscribe():
     return render_template('subcribe.html',title='Subscribe')
 
-@main.route('/post/update_post/<int:post_id>')
+
+
+@main.route('/profile/update/<int:post_id>',methods = ['GET','POST'])
 @login_required
 def update_post(post_id):
-    
-    
-    return redirect(url_for('main.index'))
+    user = Post.query.filter_by(id=post_id).first()
+    if user is None:
+        abort(404)
+    user = current_user
+    form = UpdateForm()
+
+    if form.validate_on_submit():
+        user.author = form.author.data
+        user.description = form.description.data
+        user.category = form.category.data
+        db.session.add(user)
+        db.session.commit()
+
+        return redirect(url_for('.profile',uname=user.username))
+
+    return render_template('profile/update.html',form =form, user = user)
+
+
 
 @main.route('/posts/new/', methods = ['GET','POST'])
 @login_required
@@ -48,6 +65,8 @@ def new_post():
         
         return redirect(url_for('main.index'))
     return render_template('posts.html',form=form)
+
+
 
 @main.route('/delete_post/<int:post_id>',methods= ['POST','GET'])
 @login_required
@@ -82,8 +101,8 @@ def comment(post_id):
             comment.save_comment()
             comments= Comment.query.filter_by(post_id=post_id).all()
             post = Post.query.get_or_404(post_id)
-            return render_template('posts.html',comments=comments,post=post) 
-    return render_template('posts.html',comments=comments,post=post) 
+            return render_template('comments.html',comments=comments,post=post) 
+    return render_template('comments.html',comments=comments,post=post) 
 
 @main.route('/delete_comment/<int:post_id>',methods= ['POST','GET'])
 @login_required
