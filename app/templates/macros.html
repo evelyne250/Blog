@@ -5,9 +5,7 @@
 
 				
 			 <a href="{{url_for('main.new_comment',post_id = posts.id)}}" class="btn btn-info">Comment <span>{{posts.comments.count()}}</span></a>
-				<a href="{{url_for('main.upvote',post_id = posts.id)}}" class= "btn btn-primary btn-sm"><i></i>Like <span>{{posts.upvotes.count()}}</span></a>
-				<a href="{{url_for('main.downvote',post_id = posts.id)}}" class= "btn btn-danger btn-sm"><i class="far fa-thumbs-up"></i>Dislike <span>{{posts.downvotes.count()}}</span></a>
-
+				
 
 			</div>
 		</div>
@@ -27,7 +25,8 @@
 			{% if comments %}
 			{% for comment in comments %}
 				<div class="row text-center">
-						<p style="color: rgb(43, 226, 226); font-size: 24px;">{{ comment.description }}</p>
+						<p style="color: rgb(43, 226, 226); font-size: 24px;">{{ comment.content }}</p>
+						<small>Posted by : {{comment.name}}</small>
 						
 				</div>
 			{% endfor %}
@@ -39,26 +38,4 @@
 	</ul>
 	
 			
-
-
-{% endmacro %}
-
-<!-- Displaying reviews macro  -->
-{% macro displayReviews(review_list) %}
-
-    {% for review in review_list %}
-
-    <div class="row">
-
-      <div class="col-xs-2 col-sm-2 col-md-4 col-lg-4">
-        <h4>Author</h4>
-        <p>{{review.user.username}}</p>
-      </div>
-      <div class="col-xs-10 col-sm-10 col-md-8 col-lg-8">
-        <h2> <a href="{{url_for('main.single_review',id=review.id)}}">{{review.post_title}}</a> </h2>
-      </div>
-    </div>
-
-
-    {% endfor %}
 {% endmacro %}

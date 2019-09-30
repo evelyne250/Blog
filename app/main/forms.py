@@ -20,13 +20,6 @@ class CommentForm(FlaskForm):
 	content = TextAreaField('Add comment',validators=[Required()])
 	submit = SubmitField()
 
-
-class ReviewForm(FlaskForm):
-
-    title = StringField('Review title',validators=[Required()])
-    review = TextAreaField('Movie review')
-    submit = SubmitField('Submit')
-
 class UpdateProfile(FlaskForm):
     bio = TextAreaField('Tell us about you.',validators = [Required()])
     submit = SubmitField('Submit')

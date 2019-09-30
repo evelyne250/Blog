@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
 from . import login_manager
 from datetime import datetime
+from datetime import timedelta
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -63,7 +64,7 @@ class Post(db.Model):
     description = db.Column(db.Text,nullable=False)
     author = db.Column(db.String(255),nullable=False)
     category = db.Column(db.String(255),nullable=False)
-    # date_posted = db.Column(db.DateTime, default = datetime.utcnow)   
+    date_posted = db.Column(db.DateTime, default = datetime.utcnow)   
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref = 'post', lazy = 'dynamic')
 
@@ -85,8 +86,7 @@ class Comment(db.Model):
 
     id = db.Column(db.Integer, primary_key = True)
     name =  db.Column(db.String(255),nullable=False)
-    email = db.Column(db.String(255), nullable =False)
-    content = db.Column(db.String(1000) )          
+    content = db.Column(db.String(1000) )
     date_posted = db.Column(db.DateTime, default = datetime.utcnow)    
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
 
