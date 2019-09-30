@@ -22,7 +22,8 @@ a personal blogging website where you can create and share your opinions and oth
 - [x] Writers can add a post
 - [x] Writers can delete their post
 
-
+## Link to Heroku
+https://blogpost22.herokuapp.com/
 
 ## Technologies Used
 1. Python Version 3.6
