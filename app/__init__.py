@@ -24,7 +24,7 @@ def create_app(config_name):
 
     # Creating the app configurations
 
-    app.config.from_object(config_options[config_name])
+    # app.config.from_object(config_options[config_name])
     # config_options[config_name].init_app(app)
 
     # Initializing flask extensions
@@ -49,7 +49,7 @@ def create_app(config_name):
 
 
     # configure UploadSet
-    configure_uploads(app,photos)
+    # configure_uploads(app,photos)
 
 
 
