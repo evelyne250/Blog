@@ -30,7 +30,7 @@ Keras-Applications==1.0.8
 Keras-Preprocessing==1.1.0
 Mako==1.1.0
 Markdown==3.1.1
-markdown2==2.3.8
+markdown2==2.4.0
 MarkupSafe==1.1.1
 numpy==1.17.2
 post==2019.4.13
